@@ -1,6 +1,6 @@
 'use strict';
 
-import { getTwoRandom } from './utils.js';
+import { getTwoRandom, renderField } from './utils.js';
 import { Board } from './Board.class.js';
 /**
  * This class represents the game.
@@ -51,30 +51,31 @@ class Game {
    * Starts the game.
    */
   start() {
-    const [rand1Row, rand1Col] = getTwoRandom();
-    const [rand2Row, rand2Col] = getTwoRandom();
+    this.startBtn.addEventListener('click', () => {
+      const [rand1Row, rand1Col] = getTwoRandom();
+      const [rand2Row, rand2Col] = getTwoRandom();
 
-    for (let i = 0; i < this.state.length; i++) {
-      for (let j = 0; j < this.state[i].length; j++) {
-        if (rand1Row === i && rand1Col === j) {
-          this.state[i][j] = Math.round(Math.random() > 0.1 ? 2 : 4);
-        }
+      for (let i = 0; i < this.state.length; i++) {
+        for (let j = 0; j < this.state[i].length; j++) {
+          if (rand1Row === i && rand1Col === j) {
+            this.state[i][j] = Math.round(Math.random() > 0.1 ? 2 : 4);
+          }
 
-        if (rand2Row === i && rand2Col === j) {
-          this.state[i][j] = Math.round(Math.random() > 0.1 ? 2 : 4);
+          if (rand2Row === i && rand2Col === j) {
+            this.state[i][j] = Math.round(Math.random() > 0.1 ? 2 : 4);
+          }
         }
       }
-    }
-    this.board.move(this.state);
+      renderField(this.state, this.cells);
+      this.board.move(this.state);
 
-    console.log(this.state);
+      console.log(this.state);
+    });
   }
 
   /**
    * Resets the game.
    */
-  restart() {
-
-  }
+  restart() {}
 }
 module.exports = Game;

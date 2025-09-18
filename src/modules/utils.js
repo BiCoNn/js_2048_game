@@ -183,3 +183,24 @@ function slide(row, direction) {
 
   return newRow;
 }
+
+export function renderField(state, field) {
+  const _field = Array.from(field);
+  const result = [];
+
+  for (let i = 0; i < _field.length; i += 4) {
+    result.push(_field.slice(i, i + 4));
+  }
+
+  for (let i = 0; i < state.length; i++) {
+    for (let j = 0; j < state[i].length; j++) {
+      result[i][j].textContent = '';
+      result[i][j].className = 'field-cell';
+
+      if (state[i][j] !== 0) {
+        result[i][j].textContent = state[i][j];
+        result[i][j].classList.add(`field-cell--${state[i][j]}`);
+      }
+    }
+  }
+}

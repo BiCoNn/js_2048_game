@@ -1,4 +1,4 @@
-import { insertRandomNums, shiftAndMurgeNums } from './utils.js';
+import { insertRandomNums, shiftAndMurgeNums, renderField } from './utils.js';
 
 export class Board {
   startBtn = document.querySelector('.button');
@@ -12,16 +12,16 @@ export class Board {
 
         switch (e.key) {
           case 'ArrowLeft':
-            this.moveLeft(state, e.key);
+            this.moveLeft(state, e.key, this.cells);
             break;
           case 'ArrowRight':
-            this.moveRight(state, e.key);
+            this.moveRight(state, e.key, this.cells);
             break;
           case 'ArrowDown':
-            this.moveDown(state, e.key);
+            this.moveDown(state, e.key, this.cells);
             break;
           case 'ArrowUp':
-            this.moveUp(state, e.key);
+            this.moveUp(state, e.key, this.cells);
             break;
           default:
             console.log(e.key);
@@ -30,37 +30,41 @@ export class Board {
       { once: true },
     );
   }
-  moveRight(state, direction) {
+  moveRight(state, direction, _cells) {
     let _state = state;
 
     _state = shiftAndMurgeNums(_state, direction);
     _state = insertRandomNums(_state);
     showArr(_state);
+    renderField(_state, _cells);
     this.move(_state);
   }
 
-  moveLeft(state, direction) {
+  moveLeft(state, direction, _cells) {
     let _state = state;
 
     _state = shiftAndMurgeNums(_state, direction);
     _state = insertRandomNums(_state);
     showArr(_state);
+    renderField(_state, _cells);
     this.move(_state);
   }
-  moveUp(state, direction) {
+  moveUp(state, direction, _cells) {
     let _state = state;
 
     _state = shiftAndMurgeNums(_state, direction);
     _state = insertRandomNums(_state);
     showArr(_state);
+    renderField(_state, _cells);
     this.move(_state);
   }
-  moveDown(state, direction) {
+  moveDown(state, direction, _cells) {
     let _state = state;
 
     _state = shiftAndMurgeNums(_state, direction);
     _state = insertRandomNums(_state);
     showArr(_state);
+    renderField(_state, _cells);
     this.move(_state);
   }
 }
