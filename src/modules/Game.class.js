@@ -1,6 +1,6 @@
 'use strict';
 
-import { getTwoRandomCells } from './utils.js';
+import { getTwoRandom } from './utils.js';
 import { Board } from './Board.class.js';
 /**
  * This class represents the game.
@@ -17,10 +17,9 @@ class Game {
     ],
   ) {
     this.state = initialState;
-    this.startBtn = document.querySelector('.start');
-    this.cells = document.querySelectorAll('.field-cell');
-    this.win = false;
-    this.board = new Board();
+    this.board = new Board(); // клас поле
+    this.startBtn = this.board.startBtn; // кнопка старт/рестарт
+    this.cells = this.board.cells;
 
     this.firstClick = true;
     this.start();
@@ -52,51 +51,30 @@ class Game {
    * Starts the game.
    */
   start() {
-    this.startBtn.addEventListener('click', () => {
-      if (this.firstClick) {
-        const [idx1, idx2] = getTwoRandomCells();
-        console.log('start');
+    const [rand1Row, rand1Col] = getTwoRandom();
+    const [rand2Row, rand2Col] = getTwoRandom();
 
-        this.cells.forEach((cell, i) => {
-          if (i === idx1 || i === idx2) {
-            const val = Math.random() > 0.1 ? 2 : 4;
-
-            cell.textContent = val;
-            cell.className = 'field-cell'; // спершу скидаємо клас
-            cell.classList.add(`field-cell--${val}`);
-          } else {
-            cell.className = 'field-cell';
-          }
-        });
-
-        console.log(this.cells);
-        this.board.move();
-        this.firstClick = false;
-
-        while (this.win === false) {
-          this.board.move();
+    for (let i = 0; i < this.state.length; i++) {
+      for (let j = 0; j < this.state[i].length; j++) {
+        if (rand1Row === i && rand1Col === j) {
+          this.state[i][j] = Math.round(Math.random() > 0.1 ? 2 : 4);
         }
-      } else {
-        this.restart();
+
+        if (rand2Row === i && rand2Col === j) {
+          this.state[i][j] = Math.round(Math.random() > 0.1 ? 2 : 4);
+        }
       }
-    });
+    }
+    this.board.move(this.state);
+
+    console.log(this.state);
   }
 
   /**
    * Resets the game.
    */
   restart() {
-    this.cells.forEach((cell) => {
-      cell.textContent = '';
-      cell.className = 'field-cell';
-    });
 
-    this.firstClick = true;
   }
-
-  // Add your own methods here
-
-  // опрацьов
 }
-
 module.exports = Game;
