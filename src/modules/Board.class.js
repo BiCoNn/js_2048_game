@@ -1,8 +1,15 @@
-import { insertRandomNums, shiftAndMurgeNums, renderField } from './utils.js';
+import {
+  insertRandomNums,
+  shiftAndMurgeNums,
+  renderField,
+  score,
+} from './utils.js';
 
 export class Board {
   startBtn = document.querySelector('.button');
   cells = document.querySelectorAll('.field-cell');
+  counterInfo = document.querySelector('.game-score');
+
   size = 4;
   move(arr) {
     window.document.addEventListener(
@@ -32,10 +39,13 @@ export class Board {
   }
   moveRight(state, direction, _cells) {
     let _state = state;
-
-    _state = shiftAndMurgeNums(_state, direction);
+    //1. зсовую і об'єдную однакові плиточкі
+    _state = shiftAndMurgeNums(_state, direction, this.counter);
+    //2. вставляю у випадкову плиточку число
     _state = insertRandomNums(_state);
-    showArr(_state);
+    //3. оновлюю значення
+    this.counterInfo.textContent = score;
+    //4. відмальовую плиточки
     renderField(_state, _cells);
     this.move(_state);
   }
@@ -43,35 +53,35 @@ export class Board {
   moveLeft(state, direction, _cells) {
     let _state = state;
 
-    _state = shiftAndMurgeNums(_state, direction);
+    _state = shiftAndMurgeNums(_state, direction, this.counter);
     _state = insertRandomNums(_state);
-    showArr(_state);
+    this.counterInfo.textContent = score;
     renderField(_state, _cells);
     this.move(_state);
   }
   moveUp(state, direction, _cells) {
     let _state = state;
 
-    _state = shiftAndMurgeNums(_state, direction);
+    _state = shiftAndMurgeNums(_state, direction, this.counter);
     _state = insertRandomNums(_state);
-    showArr(_state);
+    this.counterInfo.textContent = score;
     renderField(_state, _cells);
     this.move(_state);
   }
   moveDown(state, direction, _cells) {
     let _state = state;
 
-    _state = shiftAndMurgeNums(_state, direction);
+    _state = shiftAndMurgeNums(_state, direction, this.counter);
     _state = insertRandomNums(_state);
-    showArr(_state);
+    this.counterInfo.textContent = score;
     renderField(_state, _cells);
     this.move(_state);
   }
 }
 
-function showArr(arr) {
-  for (let i = 0; i < arr.length; i++) {
-    console.log(`${arr[i]}`);
-  }
-  console.log('-----------------------');
-}
+// function showArr(arr) {
+//   for (let i = 0; i < arr.length; i++) {
+//     console.log(`${arr[i]}`);
+//   }
+//   console.log('-----------------------');
+// }

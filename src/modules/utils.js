@@ -47,6 +47,7 @@
 
 //   return field;
 // }
+import { scoreToNull } from "./Game.class.js";
 
 export function getTwoRandom() {
   const xR = Math.round(Math.random() * 3);
@@ -110,7 +111,7 @@ export function insertRandomNums(field) {
 
 // основна функція, в ній я
 
-export function shiftAndMurgeNums(field, direction) {
+export function shiftAndMurgeNums(field, direction, counter) {
   let _field = field;
   const _direction = direction;
 
@@ -122,9 +123,9 @@ export function shiftAndMurgeNums(field, direction) {
     let row = _field[i];
 
     if (direction === 'ArrowLeft' || direction === 'ArrowUp') {
-      row = slideAndMerge(row, 'left');
+      row = slideAndMerge(row, 'left', counter);
     } else {
-      row = slideAndMerge(row, 'right');
+      row = slideAndMerge(row, 'right', counter);
     }
 
     _field[i] = row;
@@ -137,6 +138,8 @@ export function shiftAndMurgeNums(field, direction) {
   return _field;
 }
 
+export let score = 0;
+
 export function slideAndMerge(_row, direction) {
   let row = _row;
 
@@ -145,6 +148,7 @@ export function slideAndMerge(_row, direction) {
   for (let i = 0; i < row.length - 1; i++) {
     if (row[i] !== 0 && row[i] === row[i + 1]) {
       row[i] *= 2;
+      score += row[i];
       row[i + 1] = 0;
       i++;
     }
@@ -194,10 +198,12 @@ export function renderField(state, field) {
 
   for (let i = 0; i < state.length; i++) {
     for (let j = 0; j < state[i].length; j++) {
+      // обнуляєм стилі і контент плитки
       result[i][j].textContent = '';
       result[i][j].className = 'field-cell';
 
       if (state[i][j] !== 0) {
+        // якщо не нуль - додаєм відповідний
         result[i][j].textContent = state[i][j];
         result[i][j].classList.add(`field-cell--${state[i][j]}`);
       }
