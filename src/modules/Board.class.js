@@ -159,27 +159,31 @@ export class Board {
     return state[0].map((_, i) => state.map((row) => row[i]));
   }
   // зсуває і об'єднує числа в рядку
-  shiftAndMurgeNums(state, direction, counter) {
+  shiftAndMurgeNums(state, direction, forScore = false) {
     for (let i = 0; i < state.length; i++) {
       let row = state[i];
 
       if (direction === 'ArrowLeft' || direction === 'ArrowUp') {
-        row = this.slideAndMerge(row, 'left', counter);
+        row = this.slideAndMerge(row, 'left', forScore);
       } else {
-        row = this.slideAndMerge(row, 'right', counter);
+        row = this.slideAndMerge(row, 'right', forScore);
       }
 
       state[i] = row;
     }
   }
   // об'єднує однакові плитки в рядку
-  slideAndMerge(_row, direction) {
+  slideAndMerge(_row, direction, forScore) {
     const row = this.slide([..._row], direction);
 
     for (let i = 0; i < row.length - 1; i++) {
       if (row[i] !== 0 && row[i] === row[i + 1]) {
         row[i] *= 2;
-        this.score += row[i];
+
+        if (!forScore) {
+          this.score += row[i];
+        }
+
         row[i + 1] = 0;
         i++;
       }
@@ -207,12 +211,10 @@ export class Board {
       }
     }
 
-    this.equalityMatrix = true;
-
     return true;
   }
   // скидає всі повідомлення
-  reseetMessage() {
+  resetMessage() {
     for (const msg of this.messages) {
       msg.classList.add('hidden');
     }
@@ -223,7 +225,7 @@ export class Board {
     for (const direction of directions) {
       const tempState = this.stateMatrix.map((row) => [...row]);
 
-      this.shiftAndMurgeNums(tempState, direction);
+      this.shiftAndMurgeNums(tempState, direction, true);
 
       if (!this.isEqualMatricesAfterMove(this.stateMatrix, tempState)) {
         return true;

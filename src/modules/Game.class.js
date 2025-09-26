@@ -34,8 +34,18 @@ class Game {
    */
   getStatus(state) {
     for (let i = 0; i < state.length; i++) {
-      for (let j = 0; j < state[i].length; j++) {
-        if (state[i][j] === 2048) {
+      const row = [...state[i]];
+
+      for (let j = 0; j < row.length; j++) {
+        if (row[j] === 0) {
+          this.status = 'playing';
+
+          return 'playing';
+        }
+      }
+
+      for (let j = 0; j < row.length - 1; j++) {
+        if (row[j] === 2048) {
           this.status = 'win';
           this.board.messageWin.classList.remove('hidden');
 
@@ -44,9 +54,12 @@ class Game {
       }
     }
 
-    for (let i = 0; i < state.length; i++) {
-      for (let j = 0; j < state[i].length; j++) {
-        if (state[i][j] === 0) {
+    for (let i = 0; i < state.length - 1; i++) {
+      for (let j = 0; j < state[i].length - 1; j++) {
+        if (
+          state[i][j] === state[i][j + 1] ||
+          state[i][j] === state[i + 1][j]
+        ) {
           this.status = 'playing';
 
           return 'playing';
@@ -54,13 +67,12 @@ class Game {
       }
     }
 
-    if (!this.board.isAnyMovePossible()) {
-      this.status = 'lose';
-      this.board.messageLose.classList.remove('hidden');
+    this.status = 'lose';
+    this.board.messageLose.classList.remove('hidden');
 
-      return 'lose';
-    }
+    return 'lose';
   }
+
   updateScore(value) {
     this.score = value;
     this.board.counterInfo.textContent = this.score;
@@ -74,7 +86,7 @@ class Game {
       this.board.message.className = 'message-container';
       this.board.startBtn.className = 'button restart';
       this.board.startBtn.textContent = 'Restart';
-      this.board.reseetMessage();
+      this.board.resetMessage();
 
       if (e.target === this.board.startBtn) {
         this.board.startState();
