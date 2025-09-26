@@ -54,10 +54,12 @@ class Game {
       }
     }
 
-    this.status = 'lose';
-    this.board.messageLose.classList.remove('hidden');
+    if (!this.board.isAnyMovePossible()) {
+      this.status = 'lose';
+      this.board.messageLose.classList.remove('hidden');
 
-    return 'lose';
+      return 'lose';
+    }
   }
   updateScore(value) {
     this.score = value;
@@ -67,9 +69,12 @@ class Game {
    * Starts the game.
    */
   start() {
-    document.addEventListener('click', (e) => {
+    this.board.startBtn.addEventListener('click', (e) => {
+      this.board.score = 0;
+      this.board.message.className = 'message-container';
       this.board.startBtn.className = 'button restart';
       this.board.startBtn.textContent = 'Restart';
+      this.board.reseetMessage();
 
       if (e.target === this.board.startBtn) {
         this.board.startState();

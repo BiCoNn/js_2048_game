@@ -11,6 +11,8 @@ export class Board {
 
     this.message = document.querySelector('.message-container');
     // контейнер повідомлень
+    this.messages = Array.from(this.message.children);
+    // всі повідомлення
 
     this.messageWin = document.querySelector('.message-win');
     this.messageLose = document.querySelector('.message-lose');
@@ -205,6 +207,29 @@ export class Board {
       }
     }
 
+    this.equalityMatrix = true;
+
     return true;
+  }
+  // скидає всі повідомлення
+  reseetMessage() {
+    for (const msg of this.messages) {
+      msg.classList.add('hidden');
+    }
+  }
+  isAnyMovePossible() {
+    const directions = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
+
+    for (const direction of directions) {
+      const tempState = this.stateMatrix.map((row) => [...row]);
+
+      this.shiftAndMurgeNums(tempState, direction);
+
+      if (!this.isEqualMatricesAfterMove(this.stateMatrix, tempState)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }
