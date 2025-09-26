@@ -1,6 +1,6 @@
 'use strict';
 
-import { getTwoRandom, renderField, score } from './utils.js';
+// import { getTwoRandom, renderField, resetScore } from './utils.js';
 import { Board } from './Board.class.js';
 /**
  * This class represents the game.
@@ -18,25 +18,10 @@ class Game {
   ) {
     this.state = initialState;
     this.board = new Board(); // клас поле
-    this.startBtn = this.board.startBtn; // кнопка старт/рестарт
-    this.scoreInfo = this.board.counterInfo;
-    this.cells = this.board.cells;
-    this.score = score;
-
-    this.firstClick = true;
+    this.status = 'idle'; // статус гри
+    // this.score = 0; // рахунок
     this.start();
   }
-
-  /**
-   * @returns {number}
-   */
-  getScore() {}
-
-  /**
-   * @returns {number[][]}
-   */
-  getState() {}
-
   /**
    * Returns the current game status.
    *
@@ -47,70 +32,88 @@ class Game {
    * `win` - the game is won;
    * `lose` - the game is lost
    */
-  getStatus() {}
+  getStatus(state) {
+    for (let i = 0; i < state.length; i++) {
+      for (let j = 0; j < state[i].length; j++) {
+        if (state[i][j] === 2048) {
+          this.status = 'win';
+          this.board.messageWin.classList.remove('hidden');
 
+          return 'win';
+        }
+      }
+    }
+
+    for (let i = 0; i < state.length; i++) {
+      for (let j = 0; j < state[i].length; j++) {
+        if (state[i][j] === 0) {
+          this.status = 'playing';
+
+          return 'playing';
+        }
+      }
+    }
+
+    this.status = 'lose';
+    this.board.messageLose.classList.remove('hidden');
+
+    return 'lose';
+  }
+  updateScore(value) {
+    this.score = value;
+    this.board.counterInfo.textContent = this.score;
+  }
   /**
    * Starts the game.
    */
   start() {
-    this.startBtn.addEventListener('click', () => {
-      if (this.firstClick === false) {
-        this.restart();
-      }
+    document.addEventListener('click', (e) => {
+      this.board.startBtn.className = 'button restart';
+      this.board.startBtn.textContent = 'Restart';
 
-      this.handleStart();
+      if (e.target === this.board.startBtn) {
+        this.board.startState();
+        this.board.messageStart.classList.add('hidden');
+        this.board.counterInfo.textContent = '0';
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+        e.preventDefault();
+        this.move(e.key);
+      }
     });
   }
+  move(direction) {
+    switch (direction) {
+      case 'ArrowUp':
+        this.board.moveUp(this.board.stateMatrix);
+        this.getStatus(this.board.stateMatrix);
+        this.updateScore(this.board.score);
+        break;
+      case 'ArrowDown':
+        this.board.moveDown(this.board.stateMatrix);
+        this.getStatus(this.board.stateMatrix);
+        this.updateScore(this.board.score);
 
-  handleStart() {
-    this.startBtn.className = 'button restart';
-    this.startBtn.textContent = 'Restart';
+        break;
+      case 'ArrowLeft':
+        this.board.moveLeft(this.board.stateMatrix);
+        this.getStatus(this.board.stateMatrix);
+        this.updateScore(this.board.score);
 
-    const [rand1Row, rand1Col] = getTwoRandom();
-    const [rand2Row, rand2Col] = getTwoRandom();
+        break;
+      case 'ArrowRight':
+        this.board.moveRight(this.board.stateMatrix);
+        this.getStatus(this.board.stateMatrix);
+        this.updateScore(this.board.score);
 
-    for (let i = 0; i < this.state.length; i++) {
-      for (let j = 0; j < this.state[i].length; j++) {
-        if (rand1Row === i && rand1Col === j) {
-          this.state[i][j] = Math.random() > 0.1 ? 2 : 4;
-        }
-
-        if (rand2Row === i && rand2Col === j) {
-          this.state[i][j] = Math.random() > 0.1 ? 2 : 4;
-        }
-      }
+        break;
+      default:
+        break;
     }
-
-    renderField(this.state, this.cells);
-    this.board.move(this.state);
-
-    this.firstClick = false;
-    console.log(this.state);
-  }
-
-  /**
-   * Resets the game.
-   */
-  restart() {
-    this.firstClick = true;
-    scoreToNull(this.score, this.scoreInfo);
-
-    for (let i = 0; i < this.state.length; i++) {
-      for (let j = 0; j < this.state[i].length; j++) {
-        this.state[i][j] = 0;
-      }
-    }
-
-    for (let i = 0; i < this.cells.length; i++) {
-      this.cells[i].textContent = 0;
-    }
-    console.log(this.cells);
   }
 }
 
-export function scoreToNull(_score, field) {
-  _score = 0;
-  field.textContent = 0;
-  score = 0;
-}
 module.exports = Game;
